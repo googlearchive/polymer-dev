@@ -33,16 +33,18 @@
       * @param {string} type An event name.
       * @param detail
       * @param {Node} toNode Target node.
+      * @returns {boolean} False if event's cancelable and prevendDefault()
+      * was invoked, true otherwise.
       */
-    fire: function(type, detail, toNode, bubbles) {
+    fire: function(type, detail, toNode, bubbles, cancelable) {
       var node = toNode || this;
       //log.events && console.log('[%s]: sending [%s]', node.localName, inType);
-      node.dispatchEvent(
+      return node.dispatchEvent(
         new CustomEvent(type, {
           bubbles: (bubbles !== undefined ? bubbles : true), 
+          cancelable: (cancelable !== undefined) ? cancelable : true,
           detail: detail
         }));
-      return detail;
     },
     /**
       * Fire an event asynchronously.
