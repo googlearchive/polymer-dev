@@ -11,6 +11,7 @@
     "polymer.js"
   ],
   "dependencies": {
-    "platform-dev": "Polymer/platform-dev#master"
-  }
+    "platform-dev": "Polymer/platform-dev#0.1.2"
+  },
+  "version": "0.1.2"
 }
