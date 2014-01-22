@@ -14,60 +14,22 @@ var path = {
     var root = this.elementPath();
     // let assetpath attribute modify the resolve path
     var assetPath = this.getAttribute('assetpath') || '';
-    var relPath = this.relPath;
+    var baseUrl = new URL(assetPath, root);
     this.prototype.resolvePath = function(inPath, base) {
-      if (base) {
-        return this.element.urlToPath(base) + inPath;
-      }
-      var to = inPath;
-      if (assetPath) {
-        // assetPath is always a folder, drop the trailing '/'
-        var from = assetPath.slice(0, -1);
-        to = relPath(from, to);
-      }
-      return root + assetPath + to;
+      return pathResolver.resolveUrl(base || baseUrl, inPath);
     };
   },
   elementPath: function() {
-    return this.urlToPath(pathResolver.getDocumentUrl(this.ownerDocument));
-  },
-  relPath: function(from, to) {
-    var fromParts = from.split('/');
-    var toParts = to.split('/');
-
-    // chop to common length
-    var common = false;
-    while(fromParts.length && toParts.length && fromParts[0] === toParts[0]) {
-      fromParts.shift();
-      toParts.shift();
-      common = true;
-    }
-
-    // if there were some commonalities, add '../' for differences
-    if (common) {
-      for (var i = 0; i < fromParts.length; i++) {
-        toParts.unshift('..');
-      }
-    }
-    return toParts.join('/');
-  },
-  urlToPath: function(url) {
-    if (!url) {
-      return '';
-    } else {
-      var parts = url.split('/');
-      parts.pop();
-      parts.push('');
-      return parts.join('/');
-    }
+    return pathResolver.urlToPath(pathResolver.getDocumentUrl(this.ownerDocument));
   }
 };
 
+var ABS_URL = /(^data:)|(^http[s]?:)|(^\/)/;
+var CSS_IMPORT_REGEXP = /(@import[\s]*)([^;]*)(;)/g;
+var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
 var URL_ATTRS = ['href', 'src', 'action'];
 var URL_ATTRS_SELECTOR = '[' + URL_ATTRS.join('],[') + ']';
 var URL_TEMPLATE_SEARCH = '{{.*}}';
-var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
-var CSS_IMPORT_REGEXP = /(@import[\s]*)([^;]*)(;)/g;
 
 var pathResolver = {
   nodeUrl: function(node) {
@@ -83,10 +45,8 @@ var pathResolver = {
   },
   getDocumentUrl: function(doc) {
     var url = doc &&
-        // TODO(sjmiles): ShadowDOMPolyfill intrusion
-        (doc._URL || (doc.impl && doc.impl._URL)
-            || doc.baseURI || doc.URL)
-                || '';
+      // TODO(sjmiles): ShadowDOMPolyfill intrusion
+      (doc._URL || (doc.impl && doc.impl._URL) || doc.baseURI || doc.URL) || '';
     // take only the left side if there is a #
     return url.split('#')[0];
   },
@@ -94,7 +54,7 @@ var pathResolver = {
     if (this.isAbsUrl(url)) {
       return url;
     }
-    return this.compressUrl(this.urlToPath(baseUrl) + url);
+    return new URL(url, baseURL).href;
   },
   resolveRelativeUrl: function(baseUrl, url) {
     if (this.isAbsUrl(url)) {
@@ -103,7 +63,7 @@ var pathResolver = {
     return this.makeDocumentRelPath(this.resolveUrl(baseUrl, url));
   },
   isAbsUrl: function(url) {
-    return /(^data:)|(^http[s]?:)|(^\/)/.test(url);
+    return ABS_URL.test(url);
   },
   urlToPath: function(baseUrl) {
     var parts = baseUrl.split("/");
@@ -130,15 +90,10 @@ var pathResolver = {
     return parts.join('/') + search;
   },
   makeDocumentRelPath: function(url) {
-    // test url against document to see if we can construct a relative path
-    pathResolver.urlElt.href = url;
-    // IE does not set host if same as document
-    if (!pathResolver.urlElt.host ||
-        (!window.location.port && pathResolver.urlElt.port === '80') || 
-        (pathResolver.urlElt.hostname === window.location.hostname &&
-        pathResolver.urlElt.port === window.location.port &&
-        pathResolver.urlElt.protocol === window.location.protocol)) {
-      return this.makeRelPath(pathResolver.documentURL, pathResolver.urlElt.href);
+    var u = new URL(url, pathResolver.documentURL);
+    var wl = window.location;
+    if (u.host === wl.host && u.port === wl.port && u.protocol === wl.protocol) {
+      return this.makeRelPath(pathResolver.documentURL, url);
     } else {
       return url;
     }
@@ -155,11 +110,10 @@ var pathResolver = {
       t.unshift('..');
     }
     var r = t.join('/');
-    return r;
+    return this.compressUrl(r);
   },
   makeAbsUrl: function(url) {
-    pathResolver.urlElt.href = url;
-    return pathResolver.urlElt.href;
+    return new URL(url, pathResolver.documentURL);
   },
   resolvePathsInHTML: function(root, url) {
     url = url || pathResolver.documentUrlFromNode(root);
@@ -195,7 +149,7 @@ var pathResolver = {
     style.textContent = pathResolver.resolveCssText(style.textContent, url);
   },
   resolveCssText: function(cssText, baseUrl) {
-    var cssText = pathResolver.replaceUrlsInCssText(cssText, baseUrl, CSS_URL_REGEXP);
+    cssText = pathResolver.replaceUrlsInCssText(cssText, baseUrl, CSS_URL_REGEXP);
     return pathResolver.replaceUrlsInCssText(cssText, baseUrl, CSS_IMPORT_REGEXP);
   },
   replaceUrlsInCssText: function(cssText, baseUrl, regexp) {
@@ -228,7 +182,6 @@ var pathResolver = {
 };
 
 pathResolver.documentURL = pathResolver.getDocumentUrl(document);
-pathResolver.urlElt = document.createElement('a');
 
 // exports
 scope.api.declaration.path = path;
