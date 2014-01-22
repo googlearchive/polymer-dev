@@ -54,7 +54,7 @@ var pathResolver = {
     if (this.isAbsUrl(url)) {
       return url;
     }
-    return new URL(url, baseURL).href;
+    return new URL(url, baseUrl).href;
   },
   resolveRelativeUrl: function(baseUrl, url) {
     if (this.isAbsUrl(url)) {
@@ -93,7 +93,7 @@ var pathResolver = {
     var u = new URL(url, pathResolver.documentURL);
     var wl = window.location;
     if (u.host === wl.host && u.port === wl.port && u.protocol === wl.protocol) {
-      return this.makeRelPath(pathResolver.documentURL, url);
+      return this.makeRelPath(pathResolver.documentURL, u.href);
     } else {
       return url;
     }
