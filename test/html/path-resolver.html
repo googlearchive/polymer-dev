@@ -13,10 +13,10 @@
   document.addEventListener('polymer-ready', function() {
     var path = Polymer.pathResolver;
     var url = 'http://foo/../bar/';
-    chai.assert.equal(path.compressUrl(url), 'http://bar/', 'compressUrl compresses paths');
+    chai.assert.equal(path.compressUrl(url), 'http://foo/bar/', 'compressUrl compresses paths');
 
     url = 'http://foo/bar?baz="foo/../bar"';
-    chai.assert.equal(path.compressUrl(url), url, 'query string is not counted in path compression');
+    chai.assert.equal(decodeURI(path.compressUrl(url)), url, 'query string is not counted in path compression');
 
     url = '../foo.png';
     chai.assert.equal(path.makeDocumentRelPath(url), url, 'document relative path correctly resolves');

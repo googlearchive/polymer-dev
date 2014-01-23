@@ -25,6 +25,7 @@ var path = {
 };
 
 var ABS_URL = /(^data:)|(^http[s]?:)|(^\/)/;
+var COMPRESS_ROOT = /^(\w+):(\/\/)?/;
 var CSS_IMPORT_REGEXP = /(@import[\s]*)([^;]*)(;)/g;
 var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
 var URL_ATTRS = ['href', 'src', 'action'];
@@ -72,6 +73,10 @@ var pathResolver = {
     return parts.join("/");
   },
   compressUrl: function(url) {
+    // let absolute urls use URL
+    if (COMPRESS_ROOT.test(url)) {
+      return new URL(url).href;
+    }
     var search = '';
     var searchPos = url.indexOf('?');
     // query string is not part of the path
@@ -80,10 +85,12 @@ var pathResolver = {
       url = url.substring(searchPos, 0);
     }
     var parts = url.split('/');
-    for (var i=0, p; i<parts.length; i++) {
+    for (var i = 0, p, pn; i < parts.length - 1; i++) {
       p = parts[i];
-      if (p === '..') {
-        parts.splice(i-1, 2);
+      pn = parts[i + 1];
+      // foo/../bar -> bar
+      if (p !== '..' && pn === '..') {
+        parts.splice(i, 2);
         i -= 2;
       }
     }
