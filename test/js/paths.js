@@ -18,7 +18,7 @@ suite('resolvePath', function() {
     CustomElements.takeRecords();
     resolver = document.createElement('x-resolve');
     apResolver = document.createElement('x-resolve-ap');
-    dirname = Polymer.pathResolver.urlToPath(location.href);
+    dirname = location.href.split('/').slice(0, -1).join('/') + '/';
   });
 
   suiteTeardown(function() {

@@ -12,28 +12,19 @@
   <script>
   document.addEventListener('polymer-ready', function() {
     var path = Polymer.pathResolver;
-    var url = 'http://foo/../bar/';
-    chai.assert.equal(path.compressUrl(url), 'http://foo/bar/', 'compressUrl compresses paths');
 
-    url = 'http://foo/bar?baz="foo/../bar"';
-    chai.assert.equal(decodeURI(path.compressUrl(url)), url, 'query string is not counted in path compression');
-
-    url = '../foo.png';
+    var url = '../foo.png';
     chai.assert.equal(path.makeDocumentRelPath(url), url, 'document relative path correctly resolves');
 
     url = window.location.protocol + '//' + window.location.host + '/zonk/zim/foo.png';
     var a = document.createElement('a');
     a.href = path.makeDocumentRelPath(url);
-    chai.assert.equal(a.href, url, 'abs / url is relative to document');  
+    chai.assert.equal(a.href, url, 'abs / url is relative to document');
 
     url = window.location.protocol + '//' + window.location.hostname + ':9999/zonk/zim/foo.png';
-    chai.assert.equal(path.makeDocumentRelPath(url), url, 'other host url is absolute');  
+    chai.assert.equal(path.makeDocumentRelPath(url), url, 'other host url is absolute');
 
-
-    url = '/foo/bar/baz"';
-    chai.assert.equal(path.compressUrl(url), url, 'compressUrl handles url\'s starting with / as abs');
-    
-    done();  
+    done();
   });
   </script>
 </body>

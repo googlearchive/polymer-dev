@@ -16,7 +16,7 @@
   <script>
     var assert = chai.assert;
     addEventListener('polymer-ready', function() {
-      var d = Polymer.pathResolver.urlToPath(location.href);
+      var d = location.href.split('/').slice(0, -1).join('/') + '/';
       var xri = document.querySelector('#xri');
       assert.equal(xri.resolvePath('foo.js'), d + 'resolve/foo.js');
       assert.equal(xri.resolvePath('foo/bar'), d + 'resolve/foo/bar');
