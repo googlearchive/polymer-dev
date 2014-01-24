@@ -29,8 +29,8 @@ var URL_TEMPLATE_SEARCH = '{{.*}}';
 
 var pathResolver = {
   resolveRelativeUrl: function(baseUrl, url) {
-    var u = new URL(url, baseUrl).href;
-    return this.makeDocumentRelPath(u);
+    var u = new URL(url, baseUrl);
+    return this.makeDocumentRelPath(u.href);
   },
   makeDocumentRelPath: function(url) {
     var root = document.baseURI;
@@ -50,7 +50,7 @@ var pathResolver = {
       s.shift();
       t.shift();
     }
-    for(var i = 0, l = s.length - 1; i < l; i++) {
+    for (var i = 0, l = s.length - 1; i < l; i++) {
       t.unshift('..');
     }
     return t.join('/');
@@ -71,10 +71,6 @@ var pathResolver = {
         }
       }
     }
-  },
-  resolvePathsInStylesheet: function(sheet) {
-    var docUrl = pathResolver.nodeUrl(sheet);
-    sheet.__resource = pathResolver.resolveCssText(sheet.__resource, docUrl);
   },
   resolveStyleElts: function(root, url) {
     var styles = root.querySelectorAll('style');
