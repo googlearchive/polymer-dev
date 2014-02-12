@@ -68,8 +68,18 @@
     requireProperties: function(properties, prototype, base) {
       // ensure a prototype value for each property
       for (var n in properties) {
-        if (prototype[n] === undefined && base[n] === undefined) {
-          prototype[n] = properties[n];
+        if (prototype[n] === undefined) {
+          try {
+            if (base[n] === undefined) {
+              prototype[n] = properties[n];
+            }
+          } catch (e) {
+            // IE will produce an TypeError for some attributes
+            if (e.name == "TypeError") {
+              prototype[n] = properties[n];
+              console.warn("attribute name [" + n + "] is not recommended");
+            }
+          }
         }
       }
     },

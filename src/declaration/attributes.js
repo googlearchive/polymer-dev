@@ -32,8 +32,18 @@
           // remove excess ws
           n = names[i].trim();
           // do not override explicit entries
-          if (n && publish[n] === undefined && base[n] === undefined) {
-            publish[n] = null;
+          if (n && publish[n] === undefined) {
+            try {
+              if (base[n] === undefined) {
+                publish[n] = null;
+              }
+            } catch (e) {
+              // IE will produce an TypeError for some attributes
+              if (e.name == "TypeError") {
+                publish[n] = null;
+                console.warn("attribute name [" + n + "] is not recommended");
+              }
+            }
           }
         }
       }
