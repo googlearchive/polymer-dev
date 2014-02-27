@@ -11,10 +11,17 @@
   var events = scope.api.instance.events;
 
   var syntax = new PolymerExpressions();
+
   syntax.resolveEventHandler = function(model, path, node) {
-    var ctlr = findEventController(node);
-    if (ctlr) {
-      var fn = path.getValueFrom(ctlr);
+    var ctlr;
+    if (path.length > 1) {
+      ctlr = pathGetValueFromIndex(path, model, path.length-2);
+    } else {
+      ctlr = findEventController(node);
+      model = ctlr;
+    }
+   if (ctlr && model) {
+      var fn = path.getValueFrom(model);
       if (fn) {
         return fn.bind(ctlr);
       }
@@ -33,6 +40,18 @@
     }
     return node.host;
   };
+
+  function pathGetValueFromIndex(path, obj, index) {
+    for (var i=0; i <= index; i++) {
+      obj = obj[path[i]];
+      if (!obj) {
+        return;
+      }
+    }
+    return obj;
+  }
+
+  window.pathGetValueFromIndex = pathGetValueFromIndex;
 
   // element api supporting mdv
 
