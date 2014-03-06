@@ -5,6 +5,8 @@
     "mocha": "*",
     "chai": "*",
     "grunt": "*",
+    "grunt-concat-sourcemap": "*",
+    "grunt-contrib-concat": "*",
     "grunt-contrib-uglify": "~0.3",
     "grunt-contrib-yuidoc": "*",
     "grunt-karma": "*",
