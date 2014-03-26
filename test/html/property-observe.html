@@ -47,7 +47,7 @@
               chai.assert.equal(this.pie, 'pie', 'custom change observer called');
               checkDone();
             },
-            validateSubPath: function(oldValue, newValue) {
+            validateSubPath: function(newValue, oldValue) {
               //console.log('validateSubPath', oldValue, newValue);
               chai.assert.equal(newValue, 'exists', 'subpath change observer called');
               checkDone();

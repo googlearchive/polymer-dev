@@ -6,6 +6,6 @@
 
 htmlSuite('properties', function() {
   htmlTest('html/property-changes.html');
-  htmlTest('html/property-array-changes.html');
+  //htmlTest('html/property-array-changes.html');
   htmlTest('html/property-observe.html');
 });

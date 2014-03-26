@@ -16,6 +16,15 @@
 
     <x-compose></x-compose>
 
+    <!--<template repeat="{{}}">
+      <x-bind-init stuff="{{stuff}}"></x-bind-init>
+    </template>
+    <script>
+      addEventListener('polymer-ready', function() {
+        document.querySelector('template').model = [{stuff: 5}];
+      });
+    </script>-->
+
     <polymer-element name="x-foo">
       <script>
         Polymer('x-foo', {
@@ -48,7 +57,11 @@
       </template>
       <script>
         Polymer('x-bind-init', {
-          stuffChanged: function() {
+          created: function() {
+            console.log('created', this.localName);
+          },
+          stuffChanged: function(newValue, oldValue) {
+            console.log('stuffChanged!', newValue, this.stuff);
             this.sawStuffChanged = true;
           }
         });
@@ -79,11 +92,13 @@
               }
               done();
             });
-            this.things = [
-              {stuff: 0},
-              {stuff: 1},
-              {stuff: 2}
-            ];
+            this.async(function() {
+              this.things = [
+                {stuff: 0},
+                {stuff: 1},
+                {stuff: 2}
+              ];
+            });
           }
         });
       </script>
