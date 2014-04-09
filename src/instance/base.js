@@ -24,7 +24,7 @@
     ready: function() {
     },
     createdCallback: function() {
-      if (this.templateInstance) {
+      if (this.templateInstance && this.templateInstance.model) {
         console.warn('Attributes on ' + this.localName + ' were data bound ' +
             'prior to Polymer upgrading the element. This may result in ' +
             'incorrect binding types.');
@@ -118,7 +118,7 @@
       var template = this.fetchTemplate(elementElement);
       if (template) {
         var root = this.shadowFromTemplate(template);
-        this.shadowRoots[elementElement.name] = root;        
+        this.shadowRoots[elementElement.name] = root;
       }
     },
     // return a shadow-root template (if desired), override for custom behavior
