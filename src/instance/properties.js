@@ -18,30 +18,46 @@
   var empty = [];
 
   var properties = {
-    // only observe complex paths `foo.bar` not `foo`
     observeProperties: function() {
-      var n$ = this._observeNames;
-      if (n$ && n$.length) {
+      var n$ = this._observeNames, pn$ = this._publishNames;
+      if ((n$ && n$.length) || (pn$ && pn$.length)) {
         var self = this;
-        for (var i=0, l=n$.length, n, o; (i<l) && (n=n$[i]); i++) {
-          if (n.indexOf('.') >= 0) {
-            if (!o) {
-              var o = this._propertyObserver = new CompoundObserver();
-              // keep track of property observer so we can shut it down
-              this.registerObservers([o]);
-            }
+        var o = this._propertyObserver = new CompoundObserver();
+        // keep track of property observer so we can shut it down
+        this.registerObservers([o]);
+        for (var i=0, l=n$.length, n; (i<l) && (n=n$[i]); i++) {
+          o.addPath(this, n);
+          // observer array properties
+          var pd = Object.getOwnPropertyDescriptor(this.__proto__, n);
+          if (pd && pd.value) {
+            this.observeArrayValue(n, pd.value, null);
+          }
+        }
+        for (var i=0, l=pn$.length, n; (i<l) && (n=pn$[i]); i++) {
+          if (!this.observe || (this.observe[n] === undefined)) {
             o.addPath(this, n);
           }
         }
-        if (o) {
-          o.open(this.notifyPropertyChanges, this);
-        }
+        o.open(this.notifyPropertyChanges, this);
       }
     },
     notifyPropertyChanges: function(newValues, oldValues, paths) {
+      var name, method, called = {};
       for (var i in oldValues) {
         // note: paths is of form [object, path, object, path]
-        this.propValueChanged_(paths[2 * i + 1], newValues[i], oldValues[i]);
+        name = paths[2 * i + 1];
+        if (this.publish[name] !== undefined) {
+          this.reflectPropertyToAttribute(name);
+        }
+        method = this.observe[name];
+        if (method) {
+          this.observeArrayValue(name, newValues[i], oldValues[i]);
+          if (!called[method]) {
+            called[method] = true;
+            // observes the value if it is an array
+            this.invokeMethod(method, [oldValues[i], newValues[i], arguments]);
+          }
+        }
       }
     },
     observeArrayValue: function(name, value, old) {
@@ -65,9 +81,7 @@
       }
     },
     bindProperty: function(property, observable) {
-      // apply Polymer two-way reference binding
-      return Observer.bindToInstance(this, property, observable);
-      //return bindProperties(this, property, observable);
+      return bindProperties(this, property, observable);
     },
     invokeMethod: function(method, args) {
       var fn = this[method] || method;
@@ -115,37 +129,6 @@
         }
         this._namedObservers = {};
       }
-    },
-    propValueChanged_: function(name, newValue, oldValue) {
-      if (!this._pendingChanges) {
-        this._pendingChanges = [];
-        var self = this;
-        // TODO(sorvell): expose this in platform.
-        Observer.runEOM_(function() {
-          self.applyPropertyChanges();
-        });
-      }
-      this._pendingChanges.push(arguments);
-    },
-    applyPropertyChanges: function() {
-      var method, called={};
-      for (var i=0, l=this._pendingChanges.length, c; (i<l) && 
-          (c=this._pendingChanges[i]); i++) {
-        method = this.observe[c[0]];
-        if (!called[method]) {
-          called[method] = this.applyPropertyChange(c[0], method, c[1], c[2]);
-        }
-      }
-      this._pendingChanges = null;
-    },
-    applyPropertyChange: function(name, method, newValue, oldValue) {
-      if (this.publish[name] !== undefined) {
-        this.reflectPropertyToAttribute(name);
-      }
-      if (method) {
-        this.invokeMethod(method, [newValue, oldValue]);
-        return true;
-      }
     }
   };
 
@@ -161,7 +144,8 @@
     if (v === null || v === undefined) {
       observable.setValue(inA[inProperty]);
     }
-    return Observer.defineComputedProperty(inA, inProperty, observable);
+    // apply Polymer two-way reference binding
+    return Observer.bindToInstance(inA, inProperty, observable);
   }
 
   // logging

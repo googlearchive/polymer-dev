@@ -23,12 +23,12 @@
                 this.zonk = 'zonk';
               }.bind(this));
             },
-            barChanged: function(newValue, oldValue) {
-              chai.assert.equal(newValue, 'bar', 'change in ready calls *Changed');
+            barChanged: function(oldValue) {
+              chai.assert.equal(this.bar, 'bar', 'change in ready calls *Changed');
               checkDone();
             },
-            zonkChanged: function(newValue, oldValue) {
-              chai.assert.equal(newValue, 'zonk', 'change calls *Changed without prototype value')
+            zonkChanged: function(oldValue) {
+              chai.assert.equal(this.zonk, 'zonk', 'change calls *Changed without prototype value')
               checkDone();
             }
           });
