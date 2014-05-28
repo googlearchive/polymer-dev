@@ -34,12 +34,23 @@
     },
     // call 'method' or function method on 'obj' with 'args', if the method exists
     dispatchMethod: function(obj, method, args) {
-      if (obj) {
-        log.events && console.group('[%s] dispatch [%s]', obj.localName, method);
-        var fn = typeof method === 'function' ? method : obj[method];
-        if (fn) {
-          fn[args ? 'apply' : 'call'](obj, args);
+      if (!obj) return;
+      log.events && console.group('[%s] dispatch [%s]', obj.localName, method);
+      try {
+        if (typeof method === 'string') {
+          var parts = method.split('.');
+          for (var i = 0; i < parts.length - 1; i++) {
+            obj = obj[parts[i]];
+          }
+          method = obj[parts[parts.length - 1]];
         }
+
+        if (method) {
+          method[args ? 'apply' : 'call'](obj, args);
+        } else {
+          log.events && console.warn('Unable to resolve method');
+        }
+      } finally {
         log.events && console.groupEnd();
         Platform.flush();
       }

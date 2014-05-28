@@ -50,6 +50,7 @@ suite('events', function() {
 
 htmlSuite('events-declarative', function() {
   htmlTest('html/event-handlers.html');
+  htmlTest('html/event-handlers-bound-path.html');
   htmlTest('html/event-handlers-host.html');
   htmlTest('html/event-handlers-light.html');
   htmlTest('html/event-path.html');
