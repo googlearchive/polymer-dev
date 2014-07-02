@@ -50,7 +50,8 @@
       // delay stamping until polymer-ready so that auto-binding is not
       // required to load last.
       Polymer.whenPolymerReady(function() {
-        this.model = this;
+        // consume data already attached to .model (as for regular template)
+        this.model = Polymer.extend(this, this.model);
         this.setAttribute('bind', '');
         // we don't bother with an explicit signal here, we could ust a MO
         // if necessary
