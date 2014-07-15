@@ -33,8 +33,8 @@
   var queue = {
     // tell the queue to wait for an element to be ready
     wait: function(element, check, go) {
-      var shouldAdd = (this.indexOf(element) === -1 && 
-          flushQueue.indexOf(element) === -1);
+      var shouldAdd = (!~this.indexOf(element) && 
+          !~flushQueue.indexOf(element));
       if (shouldAdd) {
         this.add(element);
         element.__check = check;
