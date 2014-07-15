@@ -19,14 +19,13 @@
       * @param {number} timeout
       */
     async: function(method, args, timeout) {
-      // when polyfilling Object.observe, ensure changes 
+      // when polyfilling Object.observe, ensure changes
       // propagate before executing the async method
       Platform.flush();
-      // second argument to `apply` must be an array
-      args = (args && args.length) ? args : [args];
+
       // function to invoke
       var fn = function() {
-        (this[method] || method).apply(this, args);
+        (this[method] || method).apply(this, [].slice.call(args,0));
       }.bind(this);
       // execute `fn` sooner or later
       var handle = timeout ? setTimeout(fn, timeout) :
