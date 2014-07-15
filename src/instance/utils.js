@@ -30,7 +30,7 @@
       }.bind(this);
       // execute `fn` sooner or later
       var handle = timeout ? setTimeout(fn, timeout) :
-          requestAnimationFrame(fn);
+          setImmediate(fn);
       // NOTE: switch on inverting handle to determine which time is used.
       return timeout ? handle : ~handle;
     },
