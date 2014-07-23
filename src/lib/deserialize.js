@@ -61,7 +61,7 @@
       inferredType = 'date';
     }
     // delegate deserialization via type string
-    return typeHandlers[inferredType](value, currentValue);
+    return inferredType !== 'undefined'?typeHandlers[inferredType](value, currentValue):undefined;
   }
 
   // exports
