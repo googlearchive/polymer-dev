@@ -56,12 +56,15 @@
       if (n$ && n$.length) {
         var o = this._propertyObserver = new CompoundObserver(true);
         this.registerObserver(o);
+        this._observedPathIndices = {};
+        this.boundGetPropertyChangeInfo = this.getPropertyChangeInfo.bind(this);
         // TODO(sorvell): may not be kosher to access the value here (this[n]);
         // previously we looked at the descriptor on the prototype
         // this doesn't work for inheritance and not for accessors without
         // a value property
         for (var i=0, l=n$.length, n; (i<l) && (n=n$[i]); i++) {
           o.addPath(this, n);
+          this._observedPathIndices[n] = i;
           this.observeArrayValue(n, this[n], null);
         }
       }
@@ -89,7 +92,9 @@
               // e.g. 'foo bar': 'invalidate' expects the new and old values for
               // foo and bar. Currently we give only one of these and then
               // deliver all the arguments.
-              this.invokeMethod(method, [ov, nv, arguments]);
+              this._currentPropertyChanges = arguments;
+              this.invokeMethod(method, [ov, nv, this.boundGetPropertyChangeInfo]);
+              this._currentPropertyChanges = null;
             }
           }
         }
@@ -118,8 +123,10 @@
         if (Array.isArray(value)) {
           log.observe && console.log('[%s] observeArrayValue: register observer [%s]', this.localName, name, value);
           var observer = new ArrayObserver(value);
-          observer.open(function(value, old) {
-            this.invokeMethod(callbackName, [old]);
+          observer.open(function(splices) {
+            this._currentArraySplices = splices;
+            this.invokeMethod(callbackName, [null, null, this.boundGetPropertyChangeInfo]);
+            this._currentArraySplices = null;
           }, this);
           this.registerNamedObserver(name + '__array', observer);
         }
@@ -253,6 +260,18 @@
         }
         this._namedObservers = {};
       }
+    },
+    getPropertyChangeInfo: function(prop) {
+      // prop to index
+      var index = this._observedPathIndices[prop];
+      var changeInfo = this._currentPropertyChanges;
+      var oldValues = changeInfo[1], values = changeInfo[0];
+      return {
+        changed: Boolean(index in oldValues),
+        oldValue: oldValues[index],
+        newValue: values[index],
+        splices: this._currentArraySplices
+      };
     }
   };
 

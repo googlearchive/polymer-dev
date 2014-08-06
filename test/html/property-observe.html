@@ -49,7 +49,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             barChanged: function() {
               //console.log('I should not be called')
             },
-            validate: function() {
+            validate: function(oldValue, newValue, infoFn) {
+              chai.assert.equal(infoFn('bar').oldValue, '', 'changeInfo fn gives old value');
               //console.log('validate');
               chai.assert.equal(this.bar, 'bar', 'custom change observer called');
               chai.assert.equal(this.pie, 'pie', 'custom change observer called');
