@@ -28,18 +28,10 @@
       var fn = function() {
         (this[method] || method).apply(this, args);
       }.bind(this);
-      // execute `fn` sooner or later
-      var handle = timeout ? setTimeout(fn, timeout) :
-          requestAnimationFrame(fn);
-      // NOTE: switch on inverting handle to determine which time is used.
-      return timeout ? handle : ~handle;
+      return Polymer.job(null, fn, timeout);
     },
     cancelAsync: function(handle) {
-      if (handle < 0) {
-        cancelAnimationFrame(~handle);
-      } else {
-        clearTimeout(handle);
-      }
+      handle.stop();
     },
     /**
       * Fire an event.

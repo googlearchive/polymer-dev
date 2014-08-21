@@ -9,6 +9,8 @@
 
 (function(scope) {
 
+  var job = scope.job;
+
   /*
 
     Elements are added to a registration queue so that they register in 
@@ -143,7 +145,7 @@
       }
       CustomElements.ready = polyfillWasReady;
       Platform.flush();
-      requestAnimationFrame(this.flushReadyCallbacks);
+      job(null, this.flushReadyCallbacks);
     },
 
     addReadyCallback: function(callback) {

@@ -20,19 +20,27 @@
 
   var Job = function(inContext) {
     this.context = inContext;
-    this.boundComplete = this.complete.bind(this)
+    var self = this;
+    this.boundComplete = function() {
+      self.complete();
+    };
   };
   Job.prototype = {
     go: function(callback, wait) {
       this.callback = callback;
       var h;
-      if (!wait) {
+      /* NOTE: a `no wait` job fires at the fastest of setTimeout/raf if
+      the page is visible. If the page is not visible setTimeout is always used
+      to ensure the job runs. */
+      if (!wait && !document.hidden) {
         h = requestAnimationFrame(this.boundComplete);
+        var h2 = setTimeout(this.boundComplete, 0);
         this.handle = function() {
           cancelAnimationFrame(h);
+          clearTimeout(h2);
         }
       } else {
-        h = setTimeout(this.boundComplete, wait);
+        h = setTimeout(this.boundComplete, wait || 0);
         this.handle = function() {
           clearTimeout(h);
         }
