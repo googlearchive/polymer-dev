@@ -8,7 +8,12 @@
  */
 
 (function(scope) {
-  // Old DOM Level 3
+  /*
+   * Chrome uses an older version of DOM Level 3 Keyboard Events
+   *
+   * Most keys are labeled as text, but some are Unicode codepoints.
+   * Values taken from: http://www.w3.org/TR/2007/WD-DOM-Level-3-Events-20071221/keyset.html#KeySet-Set
+   */
   var KEY_IDENTIFIER = {
     'U+007F': 'del',
     'U+0009': 'tab',
@@ -40,10 +45,15 @@
     'U+0057': 'w',
     'U+0058': 'x',
     'U+0059': 'y',
-    'U+005A': 'z',
+    'U+005A': 'z'
   };
 
-  // crazy old sadness
+  /*
+   * Special table for KeyboardEvent.keyCode.
+   * KeyboardEvent.keyIdentifier is better, and KeyBoardEvent.key is even better than that
+   *
+   * Values from: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Value_of_keyCode
+   */
   var KEY_CODE = {
     13: 'enter',
     27: 'esc',
@@ -61,7 +71,15 @@
     106: '*'
   };
 
+  /*
+   * KeyboardEvent.key is mostly represented by printable character made by the keyboard, with unprintable keys labeled
+   * nicely.
+   *
+   * However, on OS X, Alt+char can make a Unicode character that follows an Apple-specific mapping. In this case, we
+   * fall back to .keyCode.
+   */
   var KEY_CHAR = /[a-z0-9*]/;
+
   function transformKey(key) {
     var validKey = '';
     if (key) {
