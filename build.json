@@ -20,6 +20,7 @@
   "src/lib/dom.js",
   "src/lib/super.js",
   "src/lib/deserialize.js",
+  "src/lib/keyboard.js",
   "src/api.js",
   "src/instance/utils.js",
   "src/instance/events.js",
