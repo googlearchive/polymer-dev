@@ -12,9 +12,9 @@
   "author": "Polymer Authors <polymer-dev@googlegroups.com>",
   "private": true,
   "dependencies": {
-    "core-component-page": "Polymer/core-component-page#master",
-    "platform-dev": "Polymer/platform-dev#master",
-    "polymer-expressions": "Polymer/polymer-expressions#master",
-    "polymer-gestures": "Polymer/polymer-gestures#master"
+    "core-component-page": "Polymer/core-component-page#>=0.4.0 <1.0.0",
+    "platform-dev": "Polymer/platform-dev#>=0.4.0 <1.0.0",
+    "polymer-expressions": "Polymer/polymer-expressions#>=0.4.0 <1.0.0",
+    "polymer-gestures": "Polymer/polymer-gestures#>=0.4.0 <1.0.0"
   }
 }
