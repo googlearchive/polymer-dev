@@ -8,14 +8,16 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <html>
-  <head>
-    <title>event handlers</title>
-    <script src="../../../platform/platform.js"></script>
-    <link rel="import" href="../../polymer.html">
-    <script src="../../../tools/test/htmltest.js"></script>
-    <script src="../../../tools/test/chai/chai.js"></script>
-  </head>
-  <body>
+
+<head>
+  <title>event handlers</title>
+  <script src="../../../platform/platform.js"></script>
+  <link rel="import" href="../../polymer.html">
+  <script src="../../../tools/test/htmltest.js"></script>
+  <script src="../../../tools/test/chai/chai.js"></script>
+</head>
+
+<body>
 
   <x-test>
     <div>...light...</div>
@@ -28,15 +30,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           display: block;
         }
         .gradient {
-          background: -webkit-gradient(linear, left top, left bottom,
-            color-stop(0%,#b4e391), color-stop(50%,#61c419),
-            color-stop(100%,#b4e391));
+          background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b4e391), color-stop(50%, #61c419), color-stop(100%, #b4e391));
         }
       </style>
 
       <div id="div" on-tap="{{divTapAction}}">Tap me!
         <content></content>
       </div>
+      <button id="button" on-click="{{buttonClickAction}}"></button>
+      <button id="buttonNested" on-click="{{obj.buttonNestedClickAction}}"></button>
+      <button id="buttonNestedInvalid" on-click="{{obj.invalidClickAction}}"></button>
       <input id="input" on-focus="{{focusAction}}" on-blur="{{blurAction}}">focusy</input>
       <div id="list" style="height: 200px; overflow: auto; border: 1px solid black;" on-scroll="{{scrollAction}}">
         <div class="gradient">
@@ -53,19 +56,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer('x-test', {
         tests: 0,
         ready: function() {
+          this.obj = {
+            buttonNestedClickAction: function(e) {
+              this.logEvent(e);
+            }
+          };
           this.list1 = [];
           this.list2 = [];
-          for (var i=0, o; i <10; i++) {
-            o = {index: i};
+          for (var i = 0, o; i < 10; i++) {
+            o = {
+              index: i
+            };
             this.list1.push(o);
           }
-          for (var i=0, o; i <10; i++) {
-            o = {index: i, itemTapAction: function(e) {
-              this.itemTapAction(e);
-            }};
+          for (var i = 0, o; i < 10; i++) {
+            o = {
+              index: i,
+              itemTapAction: function(e) {
+                this.itemTapAction(e);
+              }
+            };
             this.list2.push(o);
           }
           this.runTests();
+        },
+        buttonClickAction: function(e) {
+          this.logEvent(e);
         },
         hostTapAction: function(e) {
           e.gotHostEvent = true;
@@ -98,6 +114,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var e = this.fire('tap', null, this.$.div, true);
           chai.assert.isTrue(e.gotEvent, 'tap event heard at div host');
           chai.assert.isTrue(e.gotHostEvent, 'tap event heard at host');
+          e = this.fire('click', null, this.$.button, false);
+          chai.assert.isTrue(e.gotEvent, 'click event heard by button');
+          e = this.fire('click', null, this.$.buttonNested, false);
+          chai.assert.isTrue(e.gotEvent, 'click event heard by button from nested property');
+          e = this.fire('click', null, this.$.buttonNestedInvalid, false);
+          chai.assert.isUndefined(e.gotEvent, 'click event not heard by button due to missing handler');
           e = this.fire('focus', null, this.$.input, false);
           chai.assert.isTrue(e.gotEvent, 'focus event heard by input');
           e = this.fire('blur', null, this.$.input, false);
@@ -116,5 +138,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
     </script>
   </polymer-element>
-  </body>
+</body>
+
 </html>

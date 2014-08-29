@@ -6,7 +6,6 @@
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-
 (function(scope) {
 
   // imports
@@ -33,15 +32,41 @@
     },
     // call 'method' or function method on 'obj' with 'args', if the method exists
     dispatchMethod: function(obj, method, args) {
-      if (obj) {
-        log.events && console.group('[%s] dispatch [%s]', obj.localName, method);
-        var fn = typeof method === 'function' ? method : obj[method];
-        if (fn) {
-          fn[args ? 'apply' : 'call'](obj, args);
-        }
-        log.events && console.groupEnd();
-        Platform.flush();
+      if (!obj) {
+        return;
       }
+
+      var splitValues,
+        splitValue,
+        objValue,
+        fn,
+        i;
+
+      log.events && console.group('[%s] dispatch [%s]', obj.localName, method);
+
+      if (typeof method === 'function') {
+        fn = method;
+      } else {
+        splitValues = method.split('.');
+        objValue = obj;
+        for (i = 0; i < splitValues.length; i++) {
+          splitValue = splitValues[i];
+          if (!objValue) {
+            break;
+          }
+
+          objValue = objValue[splitValue];
+        }
+
+        fn = objValue;
+      }
+
+      if (fn) {
+        fn[args ? 'apply' : 'call'](obj, args);
+      }
+
+      log.events && console.groupEnd();
+      Platform.flush();
     }
   };
 
