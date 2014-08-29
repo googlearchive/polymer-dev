@@ -1,0 +1,13 @@
+{
+  "name": "tools",
+  "homepage": "https://github.com/Polymer/tools",
+  "_release": "0e0a0bd45c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "0e0a0bd45cb702eb72b37779d0e99dabb919cdfb"
+  },
+  "_source": "git://github.com/Polymer/tools.git",
+  "_target": "master",
+  "_originalSource": "Polymer/tools"
+}

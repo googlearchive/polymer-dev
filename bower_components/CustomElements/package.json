@@ -1,0 +1,21 @@
+{
+  "name": "CustomElements",
+  "description": "Polyfill for W3C CustomElements Specification",
+  "version": "0.0.1",
+  "devDependencies": {
+    "chai": "*",
+    "grunt": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-yuidoc": "~0.4.0",
+    "grunt-karma": "*",
+    "karma": "~0.12.0",
+    "karma-mocha": "*",
+    "karma-crbot-reporter": "*",
+    "karma-firefox-launcher": "*",
+    "karma-ie-launcher": "*",
+    "karma-mocha": "*",
+    "karma-safari-launcher": "*",
+    "karma-script-launcher": "*",
+    "mocha": "*"
+  }
+}

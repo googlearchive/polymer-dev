@@ -1,0 +1,28 @@
+{
+  "name": "polymer-expressions",
+  "homepage": "https://github.com/Polymer/polymer-expressions",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "dependencies": {
+    "TemplateBinding": "Polymer/TemplateBinding#master"
+  },
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "2f1242adae",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2f1242adae08a1b46b5627af80b96695b3b5712e"
+  },
+  "_source": "git://github.com/Polymer/polymer-expressions.git",
+  "_target": "master",
+  "_originalSource": "Polymer/polymer-expressions"
+}
