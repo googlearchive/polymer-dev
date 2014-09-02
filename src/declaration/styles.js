@@ -21,7 +21,7 @@
 
   var STYLE_SELECTOR = 'style';
   var STYLE_LOADABLE_MATCH = '@import';
-  var SHEET_SELECTOR = 'link[rel=stylesheet]';
+  var SHEET_SELECTOR = 'link[rel=stylesheet][href]';
   var STYLE_GLOBAL_SCOPE = 'global';
   var SCOPE_ATTR = 'polymer-scope';
 
