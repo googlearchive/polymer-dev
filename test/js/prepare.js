@@ -9,4 +9,5 @@
 
 htmlSuite('element preparation', function() {
   htmlTest('html/prepare.html');
+  htmlTest('html/loading.html');
 });

@@ -126,6 +126,7 @@
 
   whenReady(function() {
     document.body.removeAttribute('unresolved');
+    scope.ready = true;
     document.dispatchEvent(
       new CustomEvent('polymer-ready', {bubbles: true})
     );
