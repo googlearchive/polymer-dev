@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 
 
   grunt.registerTask('default', ['minify']);
-  grunt.registerTask('minify', ['concat_sourcemap', 'version', 'string-replace', 'uglify']);
+  grunt.registerTask('minify', ['version', 'string-replace', 'concat_sourcemap', 'uglify']);
   grunt.registerTask('test', ['override-chrome-launcher', 'karma:polymer']);
   grunt.registerTask('test-build', ['minify', 'stash', 'test', 'restore']);
   grunt.registerTask('test-buildbot', ['override-chrome-launcher', 'karma:buildbot', 'minify', 'stash', 'karma:buildbot', 'restore']);
