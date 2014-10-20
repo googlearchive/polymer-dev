@@ -13,9 +13,11 @@
   "private": true,
   "dependencies": {
     "core-component-page": "Polymer/core-component-page#master",
-    "webcomponentsjs-dev": "Polymer/webcomponentsjs-dev#master",
     "polymer-expressions": "Polymer/polymer-expressions#master",
-    "polymer-gestures": "Polymer/polymer-gestures#master"
+    "polymer-gestures": "Polymer/polymer-gestures#master",
+    "TemplateBinding": "Polymer/TemplateBinding#master",
+    "URL": "Polymer/URL#master",
+    "webcomponentsjs-dev": "Polymer/webcomponentsjs-dev#master"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^1.1.1"
