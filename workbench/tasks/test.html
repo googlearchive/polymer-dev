@@ -1,0 +1,72 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="../../../webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../../polymer.html">
+</head>
+<body>
+<script>
+// How long we should wait for endOfMicrotask before it's considered an error.
+var MAX_WAIT = 1000;
+// How many nodes we should stick in the body up front to stress the DOM.
+var INITIAL_NODES = 10000;
+// Maximum ms between interval ticks for starting or waiting for endOfMicrotask.
+var INTERVAL = 1;
+
+function log(text) {
+  var node = document.createElement('div');
+  node.appendChild(document.createTextNode(text));
+  document.body.insertBefore(node, document.body.firstChild);
+}
+
+function pretty(duration) {
+  return (Math.round(duration * 1000) / 1000) + 'ms';
+}
+
+// Start us off with a heavy DOM.
+for (var i = 0; i < INITIAL_NODES; i++) {
+  log('stress line ' + (i + 1));
+}
+
+document.addEventListener('polymer-ready', function() {
+  var intervalStart, endOfMicrotaskStart;
+  var tick = 0;
+  var intervalId = setInterval(function() {
+    tick = tick + 1;
+    var now = performance.now();
+    var tickDuration = now - (intervalStart || now);
+    intervalStart = performance.now();
+    log('interval tick ' + tick + ' in ' + pretty(tickDuration));
+
+
+    if (endOfMicrotaskStart > 0) {
+      var endOfMicrotaskDuration = performance.now() - endOfMicrotaskStart;
+      if (endOfMicrotaskDuration > MAX_WAIT) {
+        log('endOfMicrotask did not fire after waiting ' + pretty(endOfMicrotaskDuration));
+        clearInterval(intervalId);
+      }
+
+      return;
+    }
+
+    endOfMicrotaskStart = performance.now();
+    Polymer.endOfMicrotask(function() {
+      var duration = performance.now() - endOfMicrotaskStart;
+      log('endOfMicrotask (from tick ' + tick + ') after ' + pretty(duration));
+      endOfMicrotaskStart = null;
+    });
+  }, INTERVAL);
+});
+</script>
+</body>
+</html>
