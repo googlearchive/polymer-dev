@@ -42,10 +42,7 @@
         return value;
       }
       try {
-        // If the string is an object, we can parse is with the JSON library.
-        // include convenience replace for single-quotes. If the author omits
-        // quotes altogether, parse will fail.
-        return JSON.parse(value.replace(/'/g, '"'));
+        return JSON.parse(value);
       } catch(e) {
         // The object isn't valid JSON, return the raw value
         return value;
