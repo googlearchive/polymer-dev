@@ -205,7 +205,7 @@
         return name;
       } else {
         var p = this.findBasePrototype(name);
-        if (p.element) {
+        if (p && p.element) {
           return this.findTypeExtension(p.element.extends);
         }
       }
