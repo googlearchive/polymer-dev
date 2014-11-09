@@ -204,7 +204,7 @@
       if (name && name.indexOf('-') < 0) {
         return name;
       } else {
-        var p = this.findBasePrototype(name);
+        var p = this.generateBasePrototype(name);
         if (p.element) {
           return this.findTypeExtension(p.element.extends);
         }
