@@ -40,14 +40,14 @@
       // all lower-case, so this is case-insensitive search)
       var name = this.propertyForAttribute(name);
       if (name) {
+        // get original value
+        var currentValue = this[name];
         // filter out 'mustached' values, these are to be
         // replaced with bound-data and are not yet values
         // themselves
-        if (value && value.search(scope.bindPattern) >= 0) {
+        if (currentValue !== Object(currentValue) && value && value.search(scope.bindPattern) >= 0) {
           return;
         }
-        // get original value
-        var currentValue = this[name];
         // deserialize Boolean or Number values from attribute
         var value = this.deserializeValue(value, currentValue);
         // only act if the value has changed

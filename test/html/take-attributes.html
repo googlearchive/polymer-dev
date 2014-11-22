@@ -106,6 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <x-obj id="obj1" values='{ "name": "Brandon", "nums": [1, 22, 33] }'></x-obj>
     <x-obj id="obj2" values='{ "color": "Red" }'></x-obj>
     <x-obj id="obj3" values="{ 'movie': 'Buckaroo Banzai', 'DOB': '07/31/1978' }"></x-obj>
+    <x-obj id="obj4" values='{ "pattern": "{{}}" }'></x-obj>
 
     <polymer-element name="x-commas" attributes="bool,num,str">
       <script>
@@ -199,6 +200,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         assert.deepEqual(document.querySelector("#obj1").values, { name: 'Brandon', nums: [1, 22, 33] });
         assert.deepEqual(document.querySelector("#obj2").values, { "color": "Red" });
         assert.deepEqual(document.querySelector("#obj3").values, { movie: 'Buckaroo Banzai', DOB: '07/31/1978' });
+        assert.deepEqual(document.querySelector("#obj4").values, { pattern: '{{}}' });
         //
         // Comma test
         assert.isTrue(document.querySelector('#comma1').bool);
