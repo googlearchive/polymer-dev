@@ -62,7 +62,9 @@ module.exports = function(grunt) {
           repos: [
             '../polymer-expressions',
             '../polymer-gestures',
-            '../polymer-dev'
+            '../polymer-dev',
+            '../HTMLImports',
+            '../TemplateBinding'
           ]
         },
         files: {
