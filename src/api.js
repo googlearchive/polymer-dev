@@ -14,10 +14,10 @@
 
   // module
 
-  var api = {};
-
-  api.declaration = {};
-  api.instance = {};
+  var api = {
+    declaration: {},
+    instance: {}
+  };
 
   api.publish = function(apis, prototype) {
     for (var n in apis) {
