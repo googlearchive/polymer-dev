@@ -28,3 +28,31 @@ suite('attributes', function() {
   });
 
 });
+
+suite('attributes', function() {
+  var assert = chai.assert;
+
+  test('override dom accessor', function() {
+    var p = document.createElement('polymer-element');
+    p.setAttribute('name', 'test-override-dom-accessor');
+    p.setAttribute('attributes', 'title');
+    p.setAttribute('noscript', '');
+    p.init();
+
+    // Chrome's accessors are busted:
+    // https://code.google.com/p/chromium/issues/detail?id=43394
+    // 
+    // Safari is similar but ShadowDOMPolyfill fixes the problem for us:
+    // https://bugs.webkit.org/show_bug.cgi?id=49739
+    // https://github.com/Polymer/ShadowDOM/blob/3c9068695f179d3c4d5c4eab037a904a8e6efaae/src/wrappers.js#L181
+    // 
+    // So for this test we only need to worry about Chrome's breakage.
+    var isBrokenChrome = !Object.getOwnPropertyDescriptor(HTMLElement.prototype,
+        'title');
+
+    var t = document.createElement('test-override-dom-accessor');
+    t.title = 123;
+
+    assert.strictEqual(t.title, isBrokenChrome ? '123' : 123);
+  });
+});

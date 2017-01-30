@@ -169,7 +169,9 @@
 
       var privateName = name + '_';
       var privateObservable  = name + 'Observable_';
-      proto[privateName] = proto[name];
+      var originalProp = Object.getOwnPropertyDescriptor(proto, name);
+      if (originalProp)
+        Object.defineProperty(proto, privateName, originalProp);
 
       Object.defineProperty(proto, name, {
         get: function() {
